@@ -1,0 +1,44 @@
+services:
+  database:
+    image: postgres:17.2-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-support_automation}
+      POSTGRES_USER: ${POSTGRES_USER:-support_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env before starting Docker Compose}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U support_user -d support_automation"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER:-support_user}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env before starting Docker Compose}@database:5432/${POSTGRES_DB:-support_automation}"
+      AUTO_CREATE_SCHEMA: "true"
+      SCHEDULER_ENABLED: "true"
+      CORS_ORIGINS: http://localhost:8080
+      ATTACHMENT_DIR: /app/storage/attachments
+    ports:
+      - "5000:5000"
+    volumes:
+      - attachment_data:/app/storage
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  attachment_data:

@@ -1,0 +1,3 @@
+# Optional local model support. Install after requirements.txt when a trained
+# scikit-learn pipeline is configured through CLASSIFIER_MODEL_PATH.
+scikit-learn==1.6.1

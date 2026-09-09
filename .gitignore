@@ -1,0 +1,35 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+backend/instance/
+instance/
+
+# Runtime customer data
+storage/
+
+# JavaScript
+frontend/node_modules/
+frontend/dist/
+
+# Local validation tooling
+.tools/
+.python-packages/
+
+# Personal documents and media
+*.pdf
+*.doc
+*.docx
+WhatsApp Image*
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
